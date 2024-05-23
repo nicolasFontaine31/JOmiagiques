@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class JOmiagiqueApplication {
     // test gg
     public static void main(String[] args) {
+
         SpringApplication.run(JOmiagiqueApplication.class, args);
+        System.out.println("test");
     }
 
 }
