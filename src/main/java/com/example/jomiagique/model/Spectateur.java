@@ -1,5 +1,6 @@
 package com.example.jomiagique.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class Spectateur {
     private String prenom;
     private String adressemail;
     @OneToMany (mappedBy = "idSpectateur")
+    @JsonManagedReference(value = "billets-spectateur")
     private List<Billet> billets;
 
     public Spectateur(long id, String nom, String prenom, String adressemail) {
@@ -62,5 +64,16 @@ public class Spectateur {
 
     public void setBillets(List<Billet> billets) {
         this.billets = billets;
+    }
+
+    @Override
+    public String toString() {
+        return "Spectateur{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", adressemail='" + adressemail + '\'' +
+                ", billets=" + billets +
+                '}';
     }
 }

@@ -71,4 +71,15 @@ public class Organisateur {
     public void setRole(role role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "Organisateur{" +
+                "ID=" + ID +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", mail='" + mail + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

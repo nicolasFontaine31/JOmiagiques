@@ -1,8 +1,10 @@
 package com.example.jomiagique.Controller;
 
 import com.example.jomiagique.Service.BilletService;
+import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.SpectateurService;
 import com.example.jomiagique.model.Billet;
+import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Spectateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,9 @@ public class BilletController {
     @Autowired
     private SpectateurService spectateurService;
 
+    @Autowired
+    private EpreuveService epreuveService;
+
     @RequestMapping("/getBillets")
     public List<Billet> getBillets(){
         return billetService.getBillets();
@@ -31,11 +36,15 @@ public class BilletController {
     public void deleteBillet(@PathVariable long id){
         billetService.deleteBillet(id);
     }
-    //ajouter un billet == acheter un billet pour une personne
-    @RequestMapping(method = RequestMethod.POST, value = "/addBillet/{idSpectateur}")
-    public void addBillet(@RequestBody Billet billet,@PathVariable long idSpectateur ){
+    //ajouter un billet == acheter un billet pour une personne pour une épreuve
+    @RequestMapping(method = RequestMethod.POST, value = "/addBillet/{idSpectateur}/{idEpreuve}")
+    public void addBillet(@RequestBody Billet billet,@PathVariable long idSpectateur, @PathVariable long idEpreuve ){
         Spectateur spectateur = spectateurService.getSpectateur(idSpectateur);
         billet.setIdSpectateur(spectateur);
+        Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
+        if (epreuve != null){
+            billet.setIdEpreuve(epreuve);
+        }
         billetService.addBillet(billet);
     }
 

@@ -17,15 +17,17 @@ public class Billet {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private long idEpreuve;
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "billets-epreuve")
+    private Epreuve idEpreuve;
+    @ManyToOne
+    @JsonBackReference(value = "billets-spectateur")
     private Spectateur idSpectateur;
     private long prix;
     private Date dateAchat;
     private Etat etat;
 
-    public Billet(long id, long idEpreuve, Spectateur idSpectateur, long prix,Date dateAchat, Etat etat) {
+    public Billet(long id, Epreuve idEpreuve, Spectateur idSpectateur, long prix,Date dateAchat, Etat etat) {
         super();
         this.id = id;
         this.idEpreuve = idEpreuve;
@@ -44,11 +46,11 @@ public class Billet {
         this.id = id;
     }
 
-    public long getIdEpreuve() {
+    public Epreuve getIdEpreuve() {
         return idEpreuve;
     }
 
-    public void setIdEpreuve(long idEpreuve) {
+    public void setIdEpreuve(Epreuve idEpreuve) {
         this.idEpreuve = idEpreuve;
     }
 
@@ -82,5 +84,17 @@ public class Billet {
 
     public void setDateAchat(Date dateAchat) {
         this.dateAchat = dateAchat;
+    }
+
+    @Override
+    public String toString() {
+        return "Billet{" +
+                "id=" + id +
+                ", idEpreuve=" + idEpreuve +
+                ", idSpectateur=" + idSpectateur +
+                ", prix=" + prix +
+                ", dateAchat=" + dateAchat +
+                ", etat=" + etat +
+                '}';
     }
 }
