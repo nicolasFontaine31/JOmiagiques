@@ -2,11 +2,9 @@ package com.example.jomiagique.Controller;
 
 import com.example.jomiagique.Service.BilletService;
 import com.example.jomiagique.Service.EpreuveService;
+import com.example.jomiagique.Service.InfrastructureService;
 import com.example.jomiagique.Service.SpectateurService;
-import com.example.jomiagique.model.Billet;
-import com.example.jomiagique.model.Epreuve;
-import com.example.jomiagique.model.Participant;
-import com.example.jomiagique.model.Spectateur;
+import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +19,9 @@ public class EpreuveController {
 
     @Autowired
     private SpectateurService spectateurService;
+
+    @Autowired
+    private InfrastructureService infrastructureService;
 
     @Autowired
     private BilletService billetService;
@@ -40,9 +41,13 @@ public class EpreuveController {
         epreuveService.deleteEpreuve(id);
     }
     //ajouter une épreuve implique que l'on ne vient que de l'organisateur
-    @RequestMapping(method = RequestMethod.POST, value = "/addEpreuve")
-    public void addEpreuve(@RequestBody Epreuve epreuve){
-        epreuveService.addEpreuve(epreuve);
+    @RequestMapping(method = RequestMethod.POST, value = "/addEpreuve/{idInfrastructure}")
+    public void addEpreuve(@RequestBody Epreuve epreuve,@PathVariable long idInfrastructure){
+        Infrastructure infrastructure = infrastructureService.getInfrastructure(idInfrastructure);
+        if(infrastructure != null){
+            epreuve.setInfrastructure(infrastructure);
+            epreuveService.addEpreuve(epreuve);
+        }
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateEpreuve/{id}")

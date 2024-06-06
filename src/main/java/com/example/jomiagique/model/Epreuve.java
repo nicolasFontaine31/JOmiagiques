@@ -15,7 +15,6 @@ public class Epreuve {
     private long id;
     private String nomEpreuve;
     private Date date;
-    private String infrastructure;
     private int nombreDePlaces;
     @OneToMany(mappedBy = "idEpreuve")
     @JsonManagedReference(value = "billets-epreuve")
@@ -24,16 +23,28 @@ public class Epreuve {
     @JsonBackReference
     private Set<Participant> participants;
 
+    @ManyToOne
+    @JsonBackReference(value = "Infra-Epreuve")
+    private Infrastructure idInfrastructure;
+
     public Epreuve(){
 
     }
 
-    public Epreuve(long id, String nomEpreuve, Date date, String infrastructure, int nombreDePlaces, List<Billet> billets, Set<Participant> participants) {
+    public Infrastructure getInfrastructure() {
+        return idInfrastructure;
+    }
+
+    public void setInfrastructure(Infrastructure infrastructure) {
+        this.idInfrastructure = infrastructure;
+    }
+
+    public Epreuve(long id, String nomEpreuve, Date date, Infrastructure infrastructure, int nombreDePlaces, List<Billet> billets, Set<Participant> participants) {
         super();
         this.id = id;
         this.nomEpreuve = nomEpreuve;
         this.date = date;
-        this.infrastructure = infrastructure;
+        this.idInfrastructure = infrastructure;
         this.nombreDePlaces = nombreDePlaces;
         this.billets = billets;
         this.participants = participants;
@@ -63,13 +74,7 @@ public class Epreuve {
         this.date = date;
     }
 
-    public String getInfrastructure() {
-        return infrastructure;
-    }
 
-    public void setInfrastructure(String infrastructure) {
-        this.infrastructure = infrastructure;
-    }
 
     public int getNombreDePlaces() {
         return nombreDePlaces;
@@ -93,7 +98,7 @@ public class Epreuve {
                 "id=" + id +
                 ", nomEpreuve='" + nomEpreuve + '\'' +
                 ", date=" + date +
-                ", infrastructure='" + infrastructure + '\'' +
+                ", infrastructure='" + idInfrastructure + '\'' +
                 ", nombreDePlaces=" + nombreDePlaces +
                 ", billets=" + billets +
                 '}';
