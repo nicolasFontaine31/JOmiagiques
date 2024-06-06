@@ -44,7 +44,6 @@ public class InfrastructureService {
             infrastructureRepository.save(infrastructure);
         }
     }
-    // ajouter une epreuve à la list Epreuve
     public List<Epreuve> getEpreuveDansInfrastructure(long id) {
         Infrastructure infrastructuretemp = infrastructureRepository.findById(id).get();
         if (infrastructuretemp != null) {
@@ -55,12 +54,7 @@ public class InfrastructureService {
         }
     }
 
-    public void addEpreuveDansInfrastructure(long idInfra, long idEpreuve) {
-        Infrastructure infrastructuretemp = infrastructureRepository.findById(idInfra).get();
-        Epreuve epreuve = epreuveRepository.findById(idEpreuve).get();
-        if (infrastructuretemp != null) {
-            infrastructuretemp.getEpreuves().add(epreuve);
-        }
+
 
     }
-}
+

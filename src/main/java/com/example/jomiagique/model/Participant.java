@@ -17,6 +17,10 @@ public class Participant {
     private String prenom;
     private String adressemail;
     //Id delegation à faire
+    @ManyToOne
+    @JsonBackReference(value = "delegation-Participant")
+    private Delegation idDelegation;
+
 
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
