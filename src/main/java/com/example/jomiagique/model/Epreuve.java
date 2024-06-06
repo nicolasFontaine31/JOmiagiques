@@ -1,10 +1,12 @@
 package com.example.jomiagique.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Epreuve {
@@ -18,12 +20,15 @@ public class Epreuve {
     @OneToMany(mappedBy = "idEpreuve")
     @JsonManagedReference(value = "billets-epreuve")
     private List<Billet> billets;
+    @ManyToMany(mappedBy = "epreuves", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private Set<Participant> participants;
 
     public Epreuve(){
 
     }
 
-    public Epreuve(long id, String nomEpreuve, Date date, String infrastructure, int nombreDePlaces, List<Billet> billets) {
+    public Epreuve(long id, String nomEpreuve, Date date, String infrastructure, int nombreDePlaces, List<Billet> billets, Set<Participant> participants) {
         super();
         this.id = id;
         this.nomEpreuve = nomEpreuve;
@@ -31,6 +36,7 @@ public class Epreuve {
         this.infrastructure = infrastructure;
         this.nombreDePlaces = nombreDePlaces;
         this.billets = billets;
+        this.participants = participants;
     }
 
     public long getId() {
@@ -91,5 +97,13 @@ public class Epreuve {
                 ", nombreDePlaces=" + nombreDePlaces +
                 ", billets=" + billets +
                 '}';
+    }
+
+    public Set<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<Participant> participants) {
+        this.participants = participants;
     }
 }

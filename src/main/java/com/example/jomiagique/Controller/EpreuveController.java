@@ -5,12 +5,14 @@ import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.SpectateurService;
 import com.example.jomiagique.model.Billet;
 import com.example.jomiagique.model.Epreuve;
+import com.example.jomiagique.model.Participant;
 import com.example.jomiagique.model.Spectateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class EpreuveController {
@@ -81,5 +83,12 @@ public class EpreuveController {
     public List<Billet> getBilletByIdEpreuve(@PathVariable long idEpreuve){
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
         return epreuve.getBillets();
+    }
+
+    //récupérer les participants d'une épreuve
+    @RequestMapping("/getParticpants/{idEpreuve}")
+    public Set<Participant> getParticipantByIdEpreuve(@PathVariable long idEpreuve){
+        Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
+        return epreuve.getParticipants();
     }
 }
