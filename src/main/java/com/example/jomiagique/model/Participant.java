@@ -1,8 +1,10 @@
 package com.example.jomiagique.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,19 +30,30 @@ public class Participant {
     )
     private Set<Epreuve> epreuves;
 
-    //id Resultat à faire
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "Participant_Resultat_Tab",
+            joinColumns = {
+                    @JoinColumn(name = "Participant_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "resultat_id", referencedColumnName = "id")
+            }
+    )
+    private List<Resultats> resultats;
 
     public Participant(){
 
     }
 
-    public Participant(long id, String nom, String prenom, String adressemail, Set<Epreuve> epreuves) {
+    public Participant(long id, String nom, String prenom, String adressemail, Set<Epreuve> epreuves, List<Resultats> resultats) {
         super();
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.adressemail = adressemail;
         this.epreuves = epreuves;
+        this.resultats = resultats;
     }
 
     public long getId() {
@@ -81,5 +94,13 @@ public class Participant {
 
     public void setEpreuves(Set<Epreuve> epreuves) {
         this.epreuves = epreuves;
+    }
+
+    public List<Resultats> getIdResultats() {
+        return resultats;
+    }
+
+    public void setIdResultats(List<Resultats> idResultats) {
+        this.resultats = idResultats;
     }
 }

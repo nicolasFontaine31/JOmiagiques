@@ -2,8 +2,10 @@ package com.example.jomiagique.Controller;
 
 import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.ParticipantService;
+import com.example.jomiagique.Service.ResultatService;
 import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Participant;
+import com.example.jomiagique.model.Resultats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -19,6 +22,8 @@ public class ParticipantController {
     private ParticipantService participantService;
     @Autowired
     private EpreuveService epreuveService;
+    @Autowired
+    private ResultatService resultatService;
 
     @RequestMapping("/getParticipants")
     public Set<Participant> getParticipants(){
@@ -89,6 +94,32 @@ public class ParticipantController {
                 }
             }
         }
+    }
+
+    //On ajoute un participant et son numéro de position dans le body
+    //ajouter le resultat au participant
+    @RequestMapping(method = RequestMethod.PUT, value = "/addResultatByParticipant/{idResultat}/{idParticipant}")
+    public void addResultatByParticipant(@PathVariable long idResultat, @PathVariable long idParticipant){
+        Participant participant = participantService.getParticipant(idParticipant);
+        if (participant != null){
+            Resultats resultat = resultatService.getResultat(idResultat);
+            if (resultat != null){
+                List<Resultats>resultats = participant.getIdResultats();
+                resultats.add(resultat);
+                participant.setIdResultats(resultats);
+                participantService.updateParticipant(participant);
+            }
+        }
+    }
+
+    //get resultat d'un participant
+    @RequestMapping("/getResultatsByParticipant/{idParticipant}")
+    public List<Resultats> getResultatsByParticipant(@PathVariable long idParticipant){
+        Participant participant = participantService.getParticipant(idParticipant);
+        if (participant != null){
+            return participant.getIdResultats();
+        }
+        return null;
     }
 
 

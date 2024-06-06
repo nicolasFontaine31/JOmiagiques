@@ -66,7 +66,6 @@ public class EpreuveController {
         List<Billet> billets = spectateur.getBillets();
         List<Epreuve> epreuves = new ArrayList<>();
         for (Billet billet : billets) {
-            System.out.println("LAAAA");
             Epreuve epreuve = billet.getIdEpreuve();
             epreuves.add(epreuve);
         }
