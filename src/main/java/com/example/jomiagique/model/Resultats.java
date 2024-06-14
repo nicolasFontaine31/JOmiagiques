@@ -10,7 +10,7 @@ import java.util.List;
 public class Resultats {
 
     private enum position{
-        premier, deuxieme,troisieme
+        premier, deuxieme,troisieme, forfait
     }
 
     @Id
@@ -22,6 +22,10 @@ public class Resultats {
     @ManyToMany(mappedBy = "resultats", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Participant> participants;
+
+    @ManyToMany
+    @JsonBackReference
+    private List<Epreuve> epreuves;
 
     public Resultats(){
 
@@ -65,5 +69,13 @@ public class Resultats {
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }
+
+    public List<Epreuve> getEpreuves() {
+        return epreuves;
+    }
+
+    public void setEpreuves(List<Epreuve> epreuves) {
+        this.epreuves = epreuves;
     }
 }

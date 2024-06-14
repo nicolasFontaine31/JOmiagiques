@@ -1,9 +1,6 @@
 package com.example.jomiagique.Controller;
 
-import com.example.jomiagique.Service.BilletService;
-import com.example.jomiagique.Service.EpreuveService;
-import com.example.jomiagique.Service.InfrastructureService;
-import com.example.jomiagique.Service.SpectateurService;
+import com.example.jomiagique.Service.*;
 import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +22,9 @@ public class EpreuveController {
 
     @Autowired
     private BilletService billetService;
+
+    @Autowired
+    private ResultatService resultatService;
 
     @RequestMapping("/getEpreuves")
     public List<Epreuve> getEpreuves(){
@@ -95,4 +95,20 @@ public class EpreuveController {
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
         return epreuve.getParticipants();
     }
+
+    @RequestMapping("/addResultatByEpreuve/{idEpreuve}/{idResultat}")
+    public void addResultatByEpreuve(@PathVariable long idResultat, @PathVariable long idEpreuve){
+        Resultats resultat = resultatService.getResultat(idResultat);
+        if(resultat != null){
+            Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
+            if(epreuve != null){
+                List<Resultats> resultats = epreuve.getResultats();
+                resultats.add(resultat);
+                epreuve.setResultats(resultats);
+                epreuveService.updateEpreuve(epreuve);
+            }
+        }
+    }
+
+
 }

@@ -94,6 +94,19 @@ public class ParticipantController {
                 }
             }
         }
+        else {
+            if (epreuve != null) {
+                Participant participant = participantService.getParticipant(idParticipant);
+                if (participant != null) {
+                    Set<Epreuve> epreuves = participant.getEpreuves();
+                    epreuves.remove(epreuve);
+                    participant.setEpreuves(epreuves);
+                    participantService.desengagerEpreuveToParticipant(participant);
+
+
+                }
+            }
+        }
     }
 
     //On ajoute un participant et son numéro de position dans le body

@@ -27,6 +27,17 @@ public class Epreuve {
     @JsonBackReference(value = "Infra-Epreuve")
     private Infrastructure idInfrastructure;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "Epreuve_Resultat_Tab",
+            joinColumns = {
+                    @JoinColumn(name = "Epreuve_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "Resultat_id", referencedColumnName = "id")
+            }
+    )
+    private List<Resultats> resultats;
+
     public Epreuve(){
 
     }
@@ -39,7 +50,7 @@ public class Epreuve {
         this.idInfrastructure = infrastructure;
     }
 
-    public Epreuve(long id, String nomEpreuve, Date date, Infrastructure infrastructure, int nombreDePlaces, List<Billet> billets, Set<Participant> participants) {
+    public Epreuve(long id, String nomEpreuve, Date date, Infrastructure infrastructure, int nombreDePlaces, List<Billet> billets, Set<Participant> participants,  List<Resultats> resultats) {
         super();
         this.id = id;
         this.nomEpreuve = nomEpreuve;
@@ -48,6 +59,7 @@ public class Epreuve {
         this.nombreDePlaces = nombreDePlaces;
         this.billets = billets;
         this.participants = participants;
+        this.resultats = resultats;
     }
 
     public long getId() {
@@ -111,4 +123,13 @@ public class Epreuve {
     public void setParticipants(Set<Participant> participants) {
         this.participants = participants;
     }
+
+    public List<Resultats> getResultats() {
+        return resultats;
+    }
+
+    public void setResultats(List<Resultats> resultats) {
+        this.resultats = resultats;
+    }
+    
 }
