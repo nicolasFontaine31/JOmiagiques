@@ -3,6 +3,7 @@ package com.example.jomiagique.Service;
 import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Organisateur;
 import com.example.jomiagique.repository.EpreuveRepository;
+import com.example.jomiagique.repository.ResultatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

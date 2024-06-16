@@ -10,8 +10,8 @@ public class Billet {
     public Billet() {
     }
 
-    enum Etat{
-        valider, reserver,annule
+    public enum Etat{
+        valider, reserver,annule, payer
     }
 
     @Id
@@ -20,8 +20,8 @@ public class Billet {
     @ManyToOne
     @JsonBackReference(value = "billets-epreuve")
     private Epreuve idEpreuve;
-    @ManyToOne
-    @JsonBackReference(value = "billets-spectateur")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonBackReference(value = "spectateur-billets")
     private Spectateur idSpectateur;
     private long prix;
     private Date dateAchat;

@@ -69,5 +69,12 @@ public class ResultatController {
     //update Res par participant
 
 
+    //avoir les résultats par rapport à un participant et une epreuve
+    //@GetMapping("/getresultatsByIdEpreuveAndIdParticipant/{idEpreuve}/{idParticipant}")
+    //public Resultats getResultatByEpreuveAndParticipant(@PathVariable long idEpreuve, @PathVariable long idParticipant) {
+    //    return resultatService.getResultatByEpreuveAndParticipant(idEpreuve, idParticipant);
+    //}
+
+
 
 }

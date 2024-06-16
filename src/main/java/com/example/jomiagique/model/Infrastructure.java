@@ -17,8 +17,8 @@ public class Infrastructure {
     private String adresse;
     private int capacite;
 
-    @OneToMany(mappedBy = "idInfrastructure")
-    @JsonBackReference(value = "Infra-Epreuve")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "idInfrastructure")
+    @JsonManagedReference(value = "infra-epreuve")
     private List<Epreuve> epreuves;
 
     public Infrastructure(long id, String name,String adresse, int capacite) {

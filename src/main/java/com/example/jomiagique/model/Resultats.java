@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class Resultats {
 
-    private enum position{
+    public enum position{
         premier, deuxieme,troisieme, forfait
     }
 
@@ -19,24 +19,26 @@ public class Resultats {
     private String score;
     private position position;
     //id participants
-    @ManyToMany(mappedBy = "resultats", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Participant> participants;
+    //@ManyToMany(mappedBy = "resultats", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference(value = "participants-resultats")
+    private Participant participants;
 
-    @ManyToMany
-    @JsonBackReference
-    private List<Epreuve> epreuves;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference(value = "epreuves-resultats")
+    private Epreuve epreuve;
 
     public Resultats(){
 
     }
 
-    public Resultats(long id, String score, position position, List<Participant> participants) {
+    public Resultats(long id, String score, position position, Participant participant, Epreuve epreuve) {
         super();
         this.id = id;
         this.score = score;
         this.position = position;
-        this.participants = participants;
+        this.participants = participant;
+        this.epreuve = epreuve;
     }
 
     public long getId() {
@@ -63,19 +65,19 @@ public class Resultats {
         this.position = position;
     }
 
-    public List<Participant> getParticipants() {
+    public Participant getParticipant() {
         return participants;
     }
 
-    public void setParticipants(List<Participant> participants) {
+    public void setParticipants(Participant participant) {
         this.participants = participants;
     }
 
-    public List<Epreuve> getEpreuves() {
-        return epreuves;
+    public Epreuve getEpreuves() {
+        return epreuve;
     }
 
-    public void setEpreuves(List<Epreuve> epreuves) {
-        this.epreuves = epreuves;
+    public void setEpreuves(Epreuve epreuve) {
+        this.epreuve = epreuve;
     }
 }

@@ -42,4 +42,17 @@ public class SpectateurService {
         }
     }
 
+    //compte les billets, Un spectateur ne peut dépasser 4 billets
+    public int compteurBilletByEpreuve(Spectateur spectateur, long idEpreuve){
+        int count = 0;
+        if (spectateur.getBillets() != null){
+            for (Billet billet : spectateur.getBillets()) {
+                if (billet.getIdEpreuve().getId() == idEpreuve){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
 }

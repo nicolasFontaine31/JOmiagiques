@@ -7,6 +7,7 @@ import com.example.jomiagique.model.Billet;
 import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Spectateur;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,19 +37,26 @@ public class BilletController {
     public void deleteBillet(@PathVariable long id){
         billetService.deleteBillet(id);
     }
-    //ajouter un billet == acheter un billet pour une personne pour une épreuve
+
+    //ajouter un billet == réserver un billet pour une personne pour une épreuve
     @RequestMapping(method = RequestMethod.POST, value = "/addBillet/{idSpectateur}/{idEpreuve}")
-    public void addBillet(@RequestBody Billet billet,@PathVariable long idSpectateur, @PathVariable long idEpreuve ){
+    public ResponseEntity<String> addBillet(@RequestBody Billet billet, @PathVariable long idSpectateur, @PathVariable long idEpreuve ){
         Spectateur spectateur = spectateurService.getSpectateur(idSpectateur);
         billet.setIdSpectateur(spectateur);
+        billet.setEtat(Billet.Etat.reserver);
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
         if (epreuve != null){
             billet.setIdEpreuve(epreuve);
         }
+        //Si spectateur possède 4 billets interdit
+        if (spectateurService.compteurBilletByEpreuve(spectateur, idEpreuve) == 4){
+            return ResponseEntity.ok("Impossible vous possédez déjà 4 billets pour cette épreuve.");
+        }
         billetService.addBillet(billet);
+        return ResponseEntity.ok("Votre billet a été ajouté.");
     }
 
-    @RequestMapping("getBilletBySpectateur/{idSpectateur}")
+    @RequestMapping("/getBilletBySpectateur/{idSpectateur}")
     public List<Billet> getBilletBySpectateur(@PathVariable long idSpectateur){
         Spectateur spectateur = spectateurService.getSpectateur(idSpectateur);
         return spectateur.getBillets();

@@ -32,5 +32,9 @@ public class BilletService {
         billetRepository.save(billet);
     }
 
+    public void updateBillet(Billet billet){
+        billetRepository.save(billet);
+    }
+
 
 }

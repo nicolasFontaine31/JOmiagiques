@@ -18,7 +18,7 @@ public class Delegation {
     private int nbMedaillesBronze;
 
     @OneToMany(mappedBy = "idDelegation")
-    @JsonBackReference(value = "delegation-Participant")
+    @JsonManagedReference(value = "delegation-Participant")
     private List<Participant> participants;
 
     public Delegation(long id, String name,int nbMedaillesOr,int nbMedaillesArgent,int nbMedaillesBronze) {

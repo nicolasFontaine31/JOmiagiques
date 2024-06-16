@@ -13,27 +13,27 @@ public class InfrastrutureController {
     @Autowired
     public InfrastructureService infrastructureService;
 
-    @RequestMapping("/getInfrastruture/{id}")
-    public Infrastructure getInfrastruture(@PathVariable long id) {return infrastructureService.getInfrastructure(id);}
+    @RequestMapping("/getInfrastructure/{id}")
+    public Infrastructure getInfrastructure(@PathVariable long id) {return infrastructureService.getInfrastructure(id);}
 
-    @RequestMapping("/getInfrastrutures")
-    public List<Infrastructure> getInfrastrutures(){return infrastructureService.getInfrastructure();}
+    @RequestMapping("/getInfrastructures")
+    public List<Infrastructure> getInfrastructures(){return infrastructureService.getInfrastructure();}
 
-    @RequestMapping(method = RequestMethod.DELETE,value = "deleteInfrastruture/{id}" )
+    @RequestMapping(method = RequestMethod.DELETE,value = "/deleteInfrastructure/{id}" )
     public void deleteInfrastruture(@PathVariable long id){infrastructureService.deleteInfrastructure(id);}
 
     @RequestMapping(method = RequestMethod.POST, value = "/addInfrastructure")
     public void addInfrastruture(@RequestBody Infrastructure infrastructure){
         infrastructureService.addInfrastructure(infrastructure);
     }
-    @RequestMapping(method = RequestMethod.PUT, value = "updateInfrastructure/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateInfrastructure/{id}")
     public void updateInfrastruture(@RequestBody Infrastructure infrastructure, @PathVariable long id){
         infrastructureService.updateInfrastructure(infrastructure, id);
     }
 
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "getEpreuveDansInfrastructure/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/getEpreuveDansInfrastructure/{id}")
     public List<Epreuve> getEpreuveDansInfrastructure(@PathVariable long id){
         return infrastructureService.getEpreuveDansInfrastructure(id);
     }

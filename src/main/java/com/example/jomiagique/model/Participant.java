@@ -1,13 +1,15 @@
 package com.example.jomiagique.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name="participants_tab")
 public class Participant {
 
     @Id
@@ -16,41 +18,28 @@ public class Participant {
     private String nom;
     private String prenom;
     private String adressemail;
-    //Id delegation à faire
     @ManyToOne
     @JsonBackReference(value = "delegation-Participant")
     private Delegation idDelegation;
 
 
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "Participant_Epreuve_Tab",
-    joinColumns = {
-            @JoinColumn(name = "Participant_id", referencedColumnName = "id")
-    },
-            inverseJoinColumns = {
-            @JoinColumn(name = "Epreuve_id", referencedColumnName = "id")
-            }
-    )
-    private Set<Epreuve> epreuves;
+    @JoinTable(name = "particpant_epreuves_tab",
+            joinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "epreuve_id", referencedColumnName = "id"),
+            uniqueConstraints={@UniqueConstraint(columnNames={"epreuve_id", "participant_id"})})
+    @JsonIgnoreProperties(value="participants")
+    private List<Epreuve> epreuves = new ArrayList<Epreuve>();
 
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "Participant_Resultat_Tab",
-            joinColumns = {
-                    @JoinColumn(name = "Participant_id", referencedColumnName = "id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "resultat_id", referencedColumnName = "id")
-            }
-    )
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "participants")
+    @JsonManagedReference(value = "participants-resultats")
     private List<Resultats> resultats;
 
     public Participant(){
 
     }
 
-    public Participant(long id, String nom, String prenom, String adressemail, Set<Epreuve> epreuves, List<Resultats> resultats) {
+    public Participant(long id, String nom, String prenom, String adressemail, List<Epreuve> epreuves, List<Resultats> resultats, Delegation idDelegation) {
         super();
         this.id = id;
         this.nom = nom;
@@ -58,6 +47,7 @@ public class Participant {
         this.adressemail = adressemail;
         this.epreuves = epreuves;
         this.resultats = resultats;
+        this.idDelegation = idDelegation;
     }
 
     public long getId() {
@@ -92,11 +82,11 @@ public class Participant {
         this.adressemail = adressemail;
     }
 
-    public Set<Epreuve> getEpreuves() {
+    public List<Epreuve> getEpreuves() {
         return epreuves;
     }
 
-    public void setEpreuves(Set<Epreuve> epreuves) {
+    public void setEpreuves(List<Epreuve> epreuves) {
         this.epreuves = epreuves;
     }
 
@@ -107,4 +97,17 @@ public class Participant {
     public void setIdResultats(List<Resultats> idResultats) {
         this.resultats = idResultats;
     }
+
+    public Delegation getIdDelegation() {
+        return idDelegation;
+    }
+
+    public void setIdDelegation(Delegation idDelegation) {
+        this.idDelegation = idDelegation;
+    }
+
+    public List<Resultats> getResultats() {
+        return resultats;
+    }
+
 }

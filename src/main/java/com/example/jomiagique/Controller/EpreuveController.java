@@ -13,19 +13,18 @@ import java.util.Set;
 public class EpreuveController {
     @Autowired
     private EpreuveService epreuveService;
-
     @Autowired
     private SpectateurService spectateurService;
-
     @Autowired
     private InfrastructureService infrastructureService;
-
     @Autowired
     private BilletService billetService;
-
     @Autowired
     private ResultatService resultatService;
+    @Autowired
+    private OrganisateurService organisateurService;
 
+    //peut être faire que les epreuves dispo ? en fonction de la date ? à vérifier
     @RequestMapping("/getEpreuves")
     public List<Epreuve> getEpreuves(){
         return epreuveService.getEpreuves();
@@ -36,26 +35,35 @@ public class EpreuveController {
         return epreuveService.getEpreuve(id);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteEpreuve/{id}")
-    public void deleteEpreuve(@PathVariable long id){
-        epreuveService.deleteEpreuve(id);
-    }
-    //ajouter une épreuve implique que l'on ne vient que de l'organisateur
-    @RequestMapping(method = RequestMethod.POST, value = "/addEpreuve/{idInfrastructure}")
-    public void addEpreuve(@RequestBody Epreuve epreuve,@PathVariable long idInfrastructure){
-        Infrastructure infrastructure = infrastructureService.getInfrastructure(idInfrastructure);
-        if(infrastructure != null){
-            epreuve.setInfrastructure(infrastructure);
-            epreuveService.addEpreuve(epreuve);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteEpreuve/{idEpreuve}/{idOrganisateur}")
+    public void deleteEpreuve(@PathVariable long idEpreuve, @PathVariable long idOrganisateur){
+        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+        if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur){
+            epreuveService.deleteEpreuve(idEpreuve);
         }
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateEpreuve/{id}")
-    public void updateEpreuve(@RequestBody Epreuve epreuve, @PathVariable long id){
-        Epreuve epreuveTemp = epreuveService.getEpreuve(id);
+    @RequestMapping(method = RequestMethod.POST, value = "/addEpreuve/{idInfrastructure}/{idOrganisateur}")
+    public void addEpreuve(@RequestBody Epreuve epreuve,@PathVariable long idInfrastructure, @PathVariable long idOrganisateur){
+        Infrastructure infrastructure = infrastructureService.getInfrastructure(idInfrastructure);
+        if(infrastructure != null){
+            Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+            if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur){
+                epreuve.setInfrastructure(infrastructure);
+                epreuveService.addEpreuve(epreuve);
+            }
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateEpreuve/{idEpreuve}/{idOrganisateur}")
+    public void updateEpreuve(@RequestBody Epreuve epreuve, @PathVariable long idEpreuve, @PathVariable long idOrganisateur){
+        Epreuve epreuveTemp = epreuveService.getEpreuve(idEpreuve);
         if (epreuveTemp != null){
-            epreuve.setId(id);
-            epreuveService.updateEpreuve(epreuve);
+            Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+            if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur) {
+                epreuve.setId(idEpreuve);
+                epreuveService.updateEpreuve(epreuve);
+            }
         }
     }
 
@@ -74,8 +82,8 @@ public class EpreuveController {
 
     //récupérer une épreuve lié à un billet
     @RequestMapping("/getEpreuvesByIdBillet/{idBillet}")
-    public Epreuve getEpreuveByIdBillet(@PathVariable long id){
-        Billet billet = billetService.getBillet(id);
+    public Epreuve getEpreuveByIdBillet(@PathVariable long idBillet){
+        Billet billet = billetService.getBillet(idBillet);
         if (billet != null) {
              return billet.getIdEpreuve();
         }
@@ -91,7 +99,7 @@ public class EpreuveController {
 
     //récupérer les participants d'une épreuve
     @RequestMapping("/getParticpants/{idEpreuve}")
-    public Set<Participant> getParticipantByIdEpreuve(@PathVariable long idEpreuve){
+    public List<Participant> getParticipantByIdEpreuve(@PathVariable long idEpreuve){
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
         return epreuve.getParticipants();
     }

@@ -1,11 +1,7 @@
 package com.example.jomiagique.Controller;
 
-import com.example.jomiagique.Service.EpreuveService;
-import com.example.jomiagique.Service.ParticipantService;
-import com.example.jomiagique.Service.ResultatService;
-import com.example.jomiagique.model.Epreuve;
-import com.example.jomiagique.model.Participant;
-import com.example.jomiagique.model.Resultats;
+import com.example.jomiagique.Service.*;
+import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +20,10 @@ public class ParticipantController {
     private EpreuveService epreuveService;
     @Autowired
     private ResultatService resultatService;
+    @Autowired
+    private OrganisateurService organisateurService;
+    @Autowired
+    private DelegationService delegationService;
 
     @RequestMapping("/getParticipants")
     public Set<Participant> getParticipants(){
@@ -35,14 +35,28 @@ public class ParticipantController {
         return participantService.getParticipant(idParticipant);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/addParticipant")
-    public void addParticipant(@RequestBody Participant participant){
-        participantService.addParticipant(participant);
+    @RequestMapping(method = RequestMethod.POST, value = "/addParticipant/{idDelegation}/{idOrganisateur}")
+    public void addParticipant(@RequestBody Participant participant,@PathVariable long idDelegation, @PathVariable long idOrganisateur){
+        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+        if (organisateur != null) {
+            if (organisateur.getRole() == Organisateur.role.organisateur) {
+                Delegation delegation = delegationService.getDelegation(idDelegation);
+                if (delegation != null){
+                    participant.setIdDelegation(delegation);
+                    participantService.addParticipant(participant);
+                }
+            }
+        }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteParticipant/{idParticipant}")
-    public void deleteParticipant(@PathVariable long idParticipant){
-        participantService.deleteParticipant(idParticipant);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteParticipant/{idParticipant}/{idOrganisateur}")
+    public void deleteParticipant(@PathVariable long idParticipant, @PathVariable long idOrganisateur){
+        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+        if (organisateur != null) {
+            if (organisateur.getRole() == Organisateur.role.organisateur) {
+                participantService.deleteParticipant(idParticipant);
+            }
+        }
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateParticipant/{idParticipant}")
@@ -54,7 +68,6 @@ public class ParticipantController {
         }
     }
 
-    //ajouter une épreuve à un participant en fonction de la date de l'épreuve
     //envoyer des messages d'erreurs
     @RequestMapping(method = RequestMethod.PUT, value = "/addEpreuveToParticipant/{idParticipant}/{idEpreuve}")
     public void addEpreuveToParticipant(@PathVariable long idEpreuve, @PathVariable long idParticipant) {
@@ -66,7 +79,7 @@ public class ParticipantController {
             if (epreuve != null) {
                 Participant participant = participantService.getParticipant(idParticipant);
                 if (participant != null) {
-                    Set<Epreuve> epreuves = participant.getEpreuves();
+                    List<Epreuve> epreuves = participant.getEpreuves();
                     epreuves.add(epreuve);
                     participant.setEpreuves(epreuves);
                     participantService.addEpreuveToParticipant(participant);
@@ -87,7 +100,7 @@ public class ParticipantController {
             if (epreuve != null) {
                 Participant participant = participantService.getParticipant(idParticipant);
                 if (participant != null) {
-                    Set<Epreuve> epreuves = participant.getEpreuves();
+                    List<Epreuve> epreuves = participant.getEpreuves();
                     epreuves.remove(epreuve);
                     participant.setEpreuves(epreuves);
                     participantService.desengagerEpreuveToParticipant(participant);
@@ -98,12 +111,8 @@ public class ParticipantController {
             if (epreuve != null) {
                 Participant participant = participantService.getParticipant(idParticipant);
                 if (participant != null) {
-                    Set<Epreuve> epreuves = participant.getEpreuves();
-                    epreuves.remove(epreuve);
-                    participant.setEpreuves(epreuves);
-                    participantService.desengagerEpreuveToParticipant(participant);
-
-
+                    //Resultats resultat = resultatService.getResultatByEpreuveAndParticipant(idEpreuve,idParticipant);
+                    //resultat.setPosition(Resultats.position.forfait);
                 }
             }
         }
@@ -134,6 +143,8 @@ public class ParticipantController {
         }
         return null;
     }
+
+
 
 
 

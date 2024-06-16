@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Organisateur {
-    private enum role{
+    public enum role{
         organisateur, controlleur
     }
 

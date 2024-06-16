@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ResultatService {
     @Autowired
@@ -31,4 +33,9 @@ public class ResultatService {
     public void updateResultat(Resultats resultat) {
         resultatRepository.save(resultat);
     }
+
+    //public Resultats getResultatByEpreuveAndParticipant(long idEpreuve, long idParticipant) {
+    //    Optional<Resultats> optionalResultat = resultatRepository.findByEpreuves_IdAndParticipants_Id(idEpreuve, idParticipant);
+    //    return optionalResultat.orElse(null);
+    //}
 }

@@ -13,8 +13,8 @@ public class Spectateur {
     private String nom;
     private String prenom;
     private String adressemail;
-    @OneToMany (mappedBy = "idSpectateur")
-    @JsonManagedReference(value = "billets-spectateur")
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "idSpectateur")
+    @JsonManagedReference(value = "spectateur-billets")
     private List<Billet> billets;
 
     public Spectateur(long id, String nom, String prenom, String adressemail) {
