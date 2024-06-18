@@ -3,9 +3,11 @@ package com.example.jomiagique.Controller;
 import com.example.jomiagique.Service.BilletService;
 import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.OrganisateurService;
+import com.example.jomiagique.Service.ResultatService;
 import com.example.jomiagique.model.Billet;
 import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Organisateur;
+import com.example.jomiagique.model.Resultats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class OrganisateurController {
     private BilletService billetService;
     @Autowired
     private EpreuveService epreuveService;
+    @Autowired
+    private ResultatService resultatService;
 
     @RequestMapping("/getOrga/{id}")
    public Organisateur getOrganisateur(@PathVariable long id){
@@ -70,6 +74,7 @@ public class OrganisateurController {
     //et on retourne le nombre de partivcipants
    @RequestMapping(value = "/getStatistiques/{idOrganisateur}")
     public ResponseEntity<String> getStatistiques(@PathVariable long idOrganisateur){
+        long chiffreAffaire = 0;
        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
        if (organisateur != null && organisateur.getRole()== Organisateur.role.organisateur){
            StringBuilder statistiques = new StringBuilder();
@@ -79,12 +84,36 @@ public class OrganisateurController {
                int nbPlaces = epreuve.getBillets().size();
                int nbParticipants = epreuve.getParticipants().size();
                double tauxOccupation = (double) nbPlaces / epreuve.getNombreDePlaces() * 100.0;
+               if (nbPlaces != 0){
+                   chiffreAffaire = chiffreAffaire + nbPlaces * epreuve.getBillets().get(1).getPrix();
+               }
                String ligneStatistique = String.format("Nom épreuve : %s, nombre de places : %d, taux d'occupation : %.2f%%, nombre de participants : %d;",
                        nomEpreuve, nbPlaces, tauxOccupation, nbParticipants);
                statistiques.append(ligneStatistique).append("\n");
            }
-           return ResponseEntity.ok("voila les stats : "+ statistiques );
+           return ResponseEntity.ok("Les statistiques sont les suivantes : "+ statistiques+" Le chiffre d'affaire est de : "+chiffreAffaire );
        }
         return ResponseEntity.ok("Les statistiques ne sont accessibles que par l'organisateur. ");
    }
+
+
+   @RequestMapping(value = "/publierResultats/{idOrganisateur}")
+    public ResponseEntity<String> publierResultats(@PathVariable long idOrganisateur){
+        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+        StringBuilder publier = new StringBuilder();
+        if (organisateur.getRole()== Organisateur.role.organisateur){
+            List<Resultats> resultats = resultatService.getResultats();
+            for (Resultats resultats1:resultats){
+
+                String ligneStatistique = String.format("Les résultats de l'épreuve %s sont : Premier %s ");
+                publier.append(ligneStatistique).append("\n");
+            }
+            return ResponseEntity.ok("Les résultats ne peuvent être publiés que par l'organisateur. ");
+
+        }
+        else{
+            return ResponseEntity.ok("Les résultats ne peuvent être publiés que par l'organisateur. ");
+        }
+   }
+
 }

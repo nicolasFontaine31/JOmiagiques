@@ -7,6 +7,7 @@ import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Participant;
 import com.example.jomiagique.model.Resultats;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,40 +33,29 @@ public class ResultatController {
         return resultatService.getResultat(idResultat);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/addResultat")
-    public void addResultat(@RequestBody Resultats resultat){
-        resultatService.addResultat(resultat);
-    }
-
-    //add un res par epreuve
-    //@RequestMapping(method = RequestMethod.POST,value = "/addResultatByEpreuve/{idEpreuve}")
-    //public void addResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idEpreuve){
-    //    Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
-    //    if (epreuve != null){
-    //        resultat.setEpreuve(epreuve);
-    //        resultatService.addResultat(resultat);
-    //    }
-    //}
-
-    //update res par epreuve
-    //@RequestMapping(method = RequestMethod.PUT,value = "/updateResultatByEpreuve/{idEpreuve}")
-    //public void updateResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idEpreuve) {
-        //    Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
-        //    if (epreuve != null){
-                //resultat.setEpreuve(epreuve);
-                //resultatService.updateResultat(resultat);
-    //}
-    //}
-
-    //update res seul
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateResultat/{idResultat}")
-    public void updateResultat(@RequestBody Resultats resultat, @PathVariable long idResultat){
-        Resultats resultattemp = resultatService.getResultat(idResultat);
-        if (resultattemp != null){
-            resultat.setId(idResultat);
+    //add un res par epreuve et participant
+    @RequestMapping(method = RequestMethod.POST,value = "/addResultatByEpreuve/{idEpreuve}/{idParticipant}")
+    public ResponseEntity<String> addResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idEpreuve, @PathVariable long idParticipant){
+        Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
+        Participant participant = participantService.getParticipant(idParticipant);
+        if (epreuve != null && participant != null){
+            resultat.setEpreuves(epreuve);
+            resultat.setParticipants(participant);
+            resultatService.addResultat(resultat);
+            return ResponseEntity.ok("Votre résultat a été ajouté.");
         }
-        resultatService.updateResultat(resultat);
+        return ResponseEntity.ok("Impossible d'ajouter le résultat. Epreuve ou participant inexistant.");
     }
+
+
+    @RequestMapping(method = RequestMethod.PUT,value = "/updateResultatByEpreuve/{idResultat}")
+    public void updateResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idResultat) {
+        Resultats resultats = resultatService.getResultat(idResultat);
+        if (resultats != null){
+            resultatService.updateResultat(resultat);
+        }
+    }
+
     //update Res par participant
 
 

@@ -41,7 +41,7 @@ public class SpectateurController {
         spectateurService.addSpectateur(spectateur);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "updateSpectateur/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateSpectateur/{id}")
     public void updateSpectateur(@RequestBody Spectateur spectateur, @PathVariable long id) {
         spectateurService.updateSpectateur(spectateur, id);
     }
