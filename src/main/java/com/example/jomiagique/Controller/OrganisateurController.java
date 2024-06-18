@@ -1,8 +1,10 @@
 package com.example.jomiagique.Controller;
 
 import com.example.jomiagique.Service.BilletService;
+import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.OrganisateurService;
 import com.example.jomiagique.model.Billet;
+import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Organisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ public class OrganisateurController {
     private OrganisateurService organisateurService;
     @Autowired
     private BilletService billetService;
+    @Autowired
+    private EpreuveService epreuveService;
 
     @RequestMapping("/getOrga/{id}")
    public Organisateur getOrganisateur(@PathVariable long id){
@@ -60,5 +64,27 @@ public class OrganisateurController {
         return ResponseEntity.ok("Erreur pour la valider le billet.");
    }
 
-
+    //A TESTER!!!!!!!!!!!!!!
+    //pour chaque épreuve compter nombres de billets et nombre de participant
+    // on retourne pour chaque épreuve le nombre de billets et le pourcentage d'occupation
+    //et on retourne le nombre de partivcipants
+   @RequestMapping(value = "/getStatistiques/{idOrganisateur}")
+    public ResponseEntity<String> getStatistiques(@PathVariable long idOrganisateur){
+       Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+       if (organisateur != null && organisateur.getRole()== Organisateur.role.organisateur){
+           StringBuilder statistiques = new StringBuilder();
+           List<Epreuve> epreuves = epreuveService.getEpreuves();
+           for(Epreuve epreuve : epreuves){
+               String nomEpreuve = epreuve.getNomEpreuve();
+               int nbPlaces = epreuve.getBillets().size();
+               int nbParticipants = epreuve.getParticipants().size();
+               double tauxOccupation = (double) nbPlaces / epreuve.getNombreDePlaces() * 100.0;
+               String ligneStatistique = String.format("Nom épreuve : %s, nombre de places : %d, taux d'occupation : %.2f%%, nombre de participants : %d;",
+                       nomEpreuve, nbPlaces, tauxOccupation, nbParticipants);
+               statistiques.append(ligneStatistique).append("\n");
+           }
+           return ResponseEntity.ok("voila les stats : "+ statistiques );
+       }
+        return ResponseEntity.ok("Les statistiques ne sont accessibles que par l'organisateur. ");
+   }
 }

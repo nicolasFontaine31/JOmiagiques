@@ -49,8 +49,10 @@ public class EpreuveController {
         if(infrastructure != null){
             Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
             if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur){
-                epreuve.setInfrastructure(infrastructure);
-                epreuveService.addEpreuve(epreuve);
+                if (epreuve.getNombreDePlaces()<=infrastructure.getCapacite()){
+                    epreuve.setInfrastructure(infrastructure);
+                    epreuveService.addEpreuve(epreuve);
+                }
             }
         }
     }
@@ -61,8 +63,10 @@ public class EpreuveController {
         if (epreuveTemp != null){
             Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
             if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur) {
-                epreuve.setId(idEpreuve);
-                epreuveService.updateEpreuve(epreuve);
+                if(epreuve.getNombreDePlaces()<=epreuve.getInfrastructure().getCapacite()){
+                    epreuve.setId(idEpreuve);
+                    epreuveService.updateEpreuve(epreuve);
+                }
             }
         }
     }
