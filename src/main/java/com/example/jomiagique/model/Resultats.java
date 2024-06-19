@@ -18,8 +18,6 @@ public class Resultats {
     private long id;
     private String score;
     private position position;
-    //id participants
-    //@ManyToMany(mappedBy = "resultats", fetch = FetchType.LAZY)
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "participants-resultats")
     private Participant participants;

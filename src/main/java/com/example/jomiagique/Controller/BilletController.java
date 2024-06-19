@@ -38,32 +38,14 @@ public class BilletController {
         billetService.deleteBillet(id);
     }
 
-    //ajouter un billet == réserver un billet pour une personne pour une épreuve
-    @RequestMapping(method = RequestMethod.POST, value = "/addBillet/{idSpectateur}/{idEpreuve}")
-    public ResponseEntity<String> addBillet(@RequestBody Billet billet, @PathVariable long idSpectateur, @PathVariable long idEpreuve ) {
+
+
+    @PostMapping("/addBillet/{idSpectateur}/{idEpreuve}")
+    public ResponseEntity<String> addBillet(@RequestBody Billet billet, @PathVariable long idSpectateur, @PathVariable long idEpreuve) {
         Spectateur spectateur = spectateurService.getSpectateur(idSpectateur);
-        billet.setIdSpectateur(spectateur);
-        billet.setEtat(Billet.Etat.reserver);
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
-        if (epreuve != null && spectateur != null){
-            //Si spectateur possède 4 billets interdit
-            if (spectateurService.compteurBilletByEpreuve(spectateur, idEpreuve) == 4) {
-                return ResponseEntity.ok("Impossible vous possédez déjà 4 billets pour cette épreuve.");
-            }
-            else{
-                billet.setIdEpreuve(epreuve);
-                if (epreuve.getBillets().size()+1<=epreuve.getNombreDePlaces()){
-                    billetService.addBillet(billet);
-                    return ResponseEntity.ok("Votre billet a été ajouté.");
-                }
-                else{
-                    return ResponseEntity.ok("Il n'y a plus de place pour cette épreuve.");
-                }
-            }
-        }
-        if (epreuve != null) {
-        }
-        return ResponseEntity.ok("erreur");
+        String response = billetService.reserverBillet(billet, spectateur, epreuve);
+        return ResponseEntity.ok(response);
     }
 
 

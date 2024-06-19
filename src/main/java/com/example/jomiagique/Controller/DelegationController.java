@@ -27,28 +27,31 @@ public class DelegationController {
     public List<Delegation> getDelegations(){return delegationService.getDelegations();}
 
     @RequestMapping(method = RequestMethod.DELETE,value = "/deleteDelegation/{id}/{idOrganisateur}" )
-    public void deleteDelegation(@PathVariable long id, @PathVariable long idOrganisateur){
+    public ResponseEntity<String> deleteDelegation(@PathVariable long id, @PathVariable long idOrganisateur){
         Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
-        if (organisateur != null) {
-            if (organisateur.getRole() == Organisateur.role.organisateur) {
-                delegationService.deleteDelegation(id);
-                ResponseEntity.ok("la délégation a été supprimée");
-            }
+        if (organisateur != null && organisateur.getRole() == Organisateur.role.organisateur) {
+            delegationService.deleteDelegation(id);
+            return ResponseEntity.ok("la délégation a été supprimée");
         }
+        return ResponseEntity.status(403).body("Permission refusée");
     }
     @RequestMapping(method = RequestMethod.POST, value = "/addDelegation/{idOrganisateur}")
-    public void addDelegation(@RequestBody Delegation delegation,@PathVariable long idOrganisateur){
+    public ResponseEntity<String> addDelegation(@RequestBody Delegation delegation,@PathVariable long idOrganisateur){
         Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
-        if (organisateur != null){
-            if(organisateur.getRole() == Organisateur.role.organisateur){
-                delegationService.addDelegation(delegation);
-                ResponseEntity.ok("la délégation a été ajoutée");
-            }
+        if (organisateur != null && organisateur.getRole() == Organisateur.role.organisateur){
+            delegationService.addDelegation(delegation);
+            return ResponseEntity.ok("la délégation a été ajoutée");
         }
+        return ResponseEntity.status(403).body("Permission refusée");
     }
     @RequestMapping(method = RequestMethod.PUT, value = "/updateDelegation/{id}/{idOrganisateur}")
-    public void updateDelegation(@RequestBody Delegation delegation, @PathVariable long id){
-        delegationService.updateDelegation(delegation, id);
+    public ResponseEntity<String> updateDelegation(@RequestBody Delegation delegation, @PathVariable long id, @PathVariable long idOrganisateur){
+        Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
+        if (organisateur != null && organisateur.getRole() == Organisateur.role.organisateur) {
+            delegationService.updateDelegation(delegation, id);
+            return ResponseEntity.ok("la délégation a été ajoutée");
+        }
+        return ResponseEntity.status(403).body("Permission refusée");
     }
 
 

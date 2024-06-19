@@ -56,9 +56,7 @@ public class DelegationService {
         if (delegationtemp != null) {
             return delegationtemp.getParticipants();
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
 
