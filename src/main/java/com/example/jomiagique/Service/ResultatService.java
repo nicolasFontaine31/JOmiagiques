@@ -34,8 +34,8 @@ public class ResultatService {
         resultatRepository.save(resultat);
     }
 
-    //public Resultats getResultatByEpreuveAndParticipant(long idEpreuve, long idParticipant) {
-    //    Optional<Resultats> optionalResultat = resultatRepository.findByEpreuves_IdAndParticipants_Id(idEpreuve, idParticipant);
-    //    return optionalResultat.orElse(null);
-    //}
+    public Resultats getResultatByEpreuveAndParticipant(long idEpreuve, long idParticipant) {
+        Optional<Resultats> optionalResultat = resultatRepository.findByEpreuve_IdAndParticipants_Id(idEpreuve, idParticipant);
+        return optionalResultat.orElse(null);
+    }
 }

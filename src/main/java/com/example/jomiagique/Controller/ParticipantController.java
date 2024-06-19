@@ -3,6 +3,7 @@ package com.example.jomiagique.Controller;
 import com.example.jomiagique.Service.*;
 import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -111,8 +112,9 @@ public class ParticipantController {
             if (epreuve != null) {
                 Participant participant = participantService.getParticipant(idParticipant);
                 if (participant != null) {
-                    //Resultats resultat = resultatService.getResultatByEpreuveAndParticipant(idEpreuve,idParticipant);
-                    //resultat.setPosition(Resultats.position.forfait);
+                    Resultats resultat = resultatService.getResultatByEpreuveAndParticipant(idEpreuve,idParticipant);
+                    resultat.setPosition(Resultats.position.forfait);
+                    resultatService.updateResultat(resultat);
                 }
             }
         }
@@ -144,11 +146,21 @@ public class ParticipantController {
         return null;
     }
 
-
-
-
-
-
-
+    @RequestMapping("/getClassementDelegation/{idParticipant}")
+    public ResponseEntity<String> classementDelegation(@PathVariable long idParticipant){
+        Participant participant  = participantService.getParticipant(idParticipant);
+        int place = 1;
+        long idDelegation = participant.getIdDelegation().getId();
+        if(participant != null) {
+            List<Delegation> delegations = delegationService.getClassementGeneral();
+            for (Delegation delegation : delegations) {
+                if (delegation.getId() == idDelegation) {
+                    return ResponseEntity.ok("Votre délégation est à la " + place + " place");
+                }
+                place++;
+            }
+        }
+        return ResponseEntity.ok("Impossible de toruver le participant");
+    }
 
 }

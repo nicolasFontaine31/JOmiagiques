@@ -1,8 +1,10 @@
 package com.example.jomiagique.Controller;
 
+import com.example.jomiagique.Service.DelegationService;
 import com.example.jomiagique.Service.EpreuveService;
 import com.example.jomiagique.Service.ParticipantService;
 import com.example.jomiagique.Service.ResultatService;
+import com.example.jomiagique.model.Delegation;
 import com.example.jomiagique.model.Epreuve;
 import com.example.jomiagique.model.Participant;
 import com.example.jomiagique.model.Resultats;
@@ -22,6 +24,8 @@ public class ResultatController {
     private ParticipantService participantService;
     @Autowired
     private EpreuveService epreuveService;
+    @Autowired
+    private DelegationService delegationService;
 
     @RequestMapping("/getResultats")
     public List<Resultats> getResultats(){
@@ -41,6 +45,17 @@ public class ResultatController {
         if (epreuve != null && participant != null){
             resultat.setEpreuves(epreuve);
             resultat.setParticipants(participant);
+            Delegation delegation = participant.getIdDelegation();
+            if (resultat.getPosition() == Resultats.position.premier){
+                delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()+1);
+            }
+            else if (resultat.getPosition() == Resultats.position.deuxieme){
+                delegation.setNbMedaillesArgent(delegation.getNbMedaillesArgent()+1);
+            }
+            else if (resultat.getPosition() == Resultats.position.troisieme){
+                delegation.setNbMedaillesBronze(delegation.getNbMedaillesBronze()+1);
+            }
+            delegationService.updateDelegationProgram(delegation);
             resultatService.addResultat(resultat);
             return ResponseEntity.ok("Votre résultat a été ajouté.");
         }
@@ -52,19 +67,22 @@ public class ResultatController {
     public void updateResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idResultat) {
         Resultats resultats = resultatService.getResultat(idResultat);
         if (resultats != null){
-            resultatService.updateResultat(resultat);
+            Participant participant = resultats.getParticipant();
+            if (participant != null){
+                Delegation delegation = participant.getIdDelegation();
+                if (resultat.getPosition() == Resultats.position.premier){
+                    delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()+1);
+                }
+                else if (resultat.getPosition() == Resultats.position.deuxieme){
+                    delegation.setNbMedaillesArgent(delegation.getNbMedaillesArgent()+1);
+                }
+                else if (resultat.getPosition() == Resultats.position.troisieme){
+                    delegation.setNbMedaillesBronze(delegation.getNbMedaillesBronze()+1);
+                }
+                delegationService.updateDelegationProgram(delegation);
+                resultatService.updateResultat(resultat);
+            }
         }
     }
-
-    //update Res par participant
-
-
-    //avoir les résultats par rapport à un participant et une epreuve
-    //@GetMapping("/getresultatsByIdEpreuveAndIdParticipant/{idEpreuve}/{idParticipant}")
-    //public Resultats getResultatByEpreuveAndParticipant(@PathVariable long idEpreuve, @PathVariable long idParticipant) {
-    //    return resultatService.getResultatByEpreuveAndParticipant(idEpreuve, idParticipant);
-    //}
-
-
 
 }

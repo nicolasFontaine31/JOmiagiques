@@ -1,18 +1,14 @@
 package com.example.jomiagique.Controller;
 
-import com.example.jomiagique.Service.BilletService;
-import com.example.jomiagique.Service.EpreuveService;
-import com.example.jomiagique.Service.OrganisateurService;
-import com.example.jomiagique.Service.ResultatService;
-import com.example.jomiagique.model.Billet;
-import com.example.jomiagique.model.Epreuve;
-import com.example.jomiagique.model.Organisateur;
-import com.example.jomiagique.model.Resultats;
+import com.example.jomiagique.Service.*;
+import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class OrganisateurController {
@@ -23,6 +19,8 @@ public class OrganisateurController {
     private BilletService billetService;
     @Autowired
     private EpreuveService epreuveService;
+    @Autowired
+    private DelegationService delegationService;
     @Autowired
     private ResultatService resultatService;
 
@@ -97,23 +95,41 @@ public class OrganisateurController {
    }
 
 
-   @RequestMapping(value = "/publierResultats/{idOrganisateur}")
-    public ResponseEntity<String> publierResultats(@PathVariable long idOrganisateur){
+   @RequestMapping(value = "/classementGeneral")
+    public ResponseEntity<String> classementGeneral(){
+        List<Delegation> delegations =  delegationService.getClassementGeneral();
+
+        StringBuilder publier = new StringBuilder();
+        for (Delegation delegation : delegations) {
+            publier.append("Délégation: ").append(delegation.getName())
+                    .append(", Or: ").append(delegation.getNbMedaillesOr())
+                    .append(", Argent: ").append(delegation.getNbMedaillesArgent())
+                    .append(", Bronze: ").append(delegation.getNbMedaillesBronze())
+                    .append("\n");
+        }
+       return ResponseEntity.ok(publier.toString());
+   }
+
+    @RequestMapping(value = "/publierResultat/{idOrganisateur}")
+    public ResponseEntity<String> publierResultat(@PathVariable long idOrganisateur) {
         Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
         StringBuilder publier = new StringBuilder();
-        if (organisateur.getRole()== Organisateur.role.organisateur){
+        if (organisateur.getRole()== Organisateur.role.organisateur) {
             List<Resultats> resultats = resultatService.getResultats();
-            for (Resultats resultats1:resultats){
-
-                String ligneStatistique = String.format("Les résultats de l'épreuve %s sont : Premier %s ");
-                publier.append(ligneStatistique).append("\n");
+            for(Resultats resultats1:resultats){
+                publier.append("Dans l'épreuve : ").append(resultats1.getEpreuves().getNomEpreuve())
+                        .append("Le participant :  ").append(resultats1.getParticipant().getNom())
+                        .append(resultats1.getParticipant().getPrenom())
+                        .append("a marqué ").append(resultats1.getScore())
+                        .append(" et il est classé ").append(resultats1.getPosition())
+                        .append("\n");
             }
-            return ResponseEntity.ok("Les résultats ne peuvent être publiés que par l'organisateur. ");
-
+            return ResponseEntity.ok(publier.toString());
         }
         else{
             return ResponseEntity.ok("Les résultats ne peuvent être publiés que par l'organisateur. ");
         }
-   }
+    }
 
-}
+
+    }

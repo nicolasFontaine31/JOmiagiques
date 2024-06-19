@@ -45,19 +45,23 @@ public class BilletController {
         billet.setIdSpectateur(spectateur);
         billet.setEtat(Billet.Etat.reserver);
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
-        if (epreuve != null) {
-            billet.setIdEpreuve(epreuve);
-            if (epreuve.getBillets().size()+1<=epreuve.getNombreDePlaces()){
-                billetService.addBillet(billet);
-                return ResponseEntity.ok("Votre billet a été ajouté.");
+        if (epreuve != null && spectateur != null){
+            //Si spectateur possède 4 billets interdit
+            if (spectateurService.compteurBilletByEpreuve(spectateur, idEpreuve) == 4) {
+                return ResponseEntity.ok("Impossible vous possédez déjà 4 billets pour cette épreuve.");
             }
             else{
-                return ResponseEntity.ok("Il n'y a plus de place pour cette épreuve.");
+                billet.setIdEpreuve(epreuve);
+                if (epreuve.getBillets().size()+1<=epreuve.getNombreDePlaces()){
+                    billetService.addBillet(billet);
+                    return ResponseEntity.ok("Votre billet a été ajouté.");
+                }
+                else{
+                    return ResponseEntity.ok("Il n'y a plus de place pour cette épreuve.");
+                }
             }
         }
-        //Si spectateur possède 4 billets interdit
-        if (spectateurService.compteurBilletByEpreuve(spectateur, idEpreuve) == 4) {
-            return ResponseEntity.ok("Impossible vous possédez déjà 4 billets pour cette épreuve.");
+        if (epreuve != null) {
         }
         return ResponseEntity.ok("erreur");
     }

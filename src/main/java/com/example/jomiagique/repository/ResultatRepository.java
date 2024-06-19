@@ -8,5 +8,6 @@ import java.util.Optional;
 
 
 public interface ResultatRepository extends CrudRepository<Resultats, Long> {
-    //Optional<Resultats> findByEpreuves_IdAndParticipants_Id(long idEpreuve, long idParticipant);
+    Optional<Resultats> findByEpreuve_IdAndParticipants_Id(long idEpreuve, long idParticipant);
+
 }

@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DelegationService {
@@ -36,6 +38,12 @@ public class DelegationService {
     public void addDelegation(Delegation delegation) {
         delegationRepository.save(delegation);
     }
+
+    //cet appel de fonction ne se fait que quand une délégation existe avec un participant depuis l'ajout d'un résultat.
+    public void updateDelegationProgram(Delegation delegation){
+        delegationRepository.save(delegation);
+    }
+
     public void updateDelegation(Delegation delegation, long id) {
         Delegation delegationtemp = delegationRepository.findById(id).get();
         if (delegationtemp != null){
@@ -54,4 +62,11 @@ public class DelegationService {
     }
 
 
+    public List<Delegation> getClassementGeneral() {
+        return getDelegations().stream()
+                .sorted(Comparator.comparingInt(Delegation::getNbMedaillesOr)
+                        .thenComparingInt(Delegation::getNbMedaillesArgent)
+                        .thenComparingInt(Delegation::getNbMedaillesBronze))
+                .collect(Collectors.toList());
+    }
 }
