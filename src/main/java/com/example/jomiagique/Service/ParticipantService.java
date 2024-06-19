@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -46,5 +47,15 @@ public class ParticipantService {
 
     public void desengagerEpreuveToParticipant(Participant participant) {
         participantRepository.save(participant);
+    }
+
+    public boolean verifEpreuve(Participant participant, long idEpreuve) {
+        List<Epreuve> epreuveList = participant.getEpreuves();
+        for(Epreuve epreuve:epreuveList){
+            if (idEpreuve == epreuve.getId()){
+                return true;
+            }
+        }
+        return false;
     }
 }

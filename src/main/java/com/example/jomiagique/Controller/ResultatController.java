@@ -43,21 +43,24 @@ public class ResultatController {
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
         Participant participant = participantService.getParticipant(idParticipant);
         if (epreuve != null && participant != null){
-            resultat.setEpreuves(epreuve);
-            resultat.setParticipants(participant);
-            Delegation delegation = participant.getIdDelegation();
-            if (resultat.getPosition() == Resultats.position.premier){
-                delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()+1);
+            if (participantService.verifEpreuve(participant,epreuve.getId())){
+                resultat.setEpreuves(epreuve);
+                resultat.setParticipants(participant);
+                Delegation delegation = participant.getIdDelegation();
+                if (resultat.getPosition() == Resultats.position.premier){
+                    delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()+1);
+                }
+                else if (resultat.getPosition() == Resultats.position.deuxieme){
+                    delegation.setNbMedaillesArgent(delegation.getNbMedaillesArgent()+1);
+                }
+                else if (resultat.getPosition() == Resultats.position.troisieme){
+                    delegation.setNbMedaillesBronze(delegation.getNbMedaillesBronze()+1);
+                }
+                delegationService.updateDelegationProgram(delegation);
+                resultatService.addResultat(resultat);
+                return ResponseEntity.ok("Votre résultat a été ajouté.");
             }
-            else if (resultat.getPosition() == Resultats.position.deuxieme){
-                delegation.setNbMedaillesArgent(delegation.getNbMedaillesArgent()+1);
-            }
-            else if (resultat.getPosition() == Resultats.position.troisieme){
-                delegation.setNbMedaillesBronze(delegation.getNbMedaillesBronze()+1);
-            }
-            delegationService.updateDelegationProgram(delegation);
-            resultatService.addResultat(resultat);
-            return ResponseEntity.ok("Votre résultat a été ajouté.");
+            return ResponseEntity.ok("Impossible d'ajouter le résultat. Le participant n'est pas lié à cette épreuve.");
         }
         return ResponseEntity.ok("Impossible d'ajouter le résultat. Epreuve ou participant inexistant.");
     }
@@ -70,7 +73,16 @@ public class ResultatController {
             Participant participant = resultats.getParticipant();
             if (participant != null){
                 Delegation delegation = participant.getIdDelegation();
-                if (resultat.getPosition() == Resultats.position.premier){
+                if (resultats.getPosition() == Resultats.position.premier ){
+                    delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()-1);
+                }
+                else if (resultats.getPosition() == Resultats.position.deuxieme){
+                    delegation.setNbMedaillesArgent(delegation.getNbMedaillesArgent()-1);
+                }
+                else if (resultats.getPosition() == Resultats.position.troisieme){
+                    delegation.setNbMedaillesBronze(delegation.getNbMedaillesBronze()-1);
+                }
+                if (resultat.getPosition() == Resultats.position.premier ){
                     delegation.setNbMedaillesOr(delegation.getNbMedaillesOr()+1);
                 }
                 else if (resultat.getPosition() == Resultats.position.deuxieme){

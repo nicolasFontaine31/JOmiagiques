@@ -16,8 +16,7 @@ public class Infrastructure {
     private String name;
     private String adresse;
     private int capacite;
-
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "idInfrastructure")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "idInfrastructure")
     @JsonManagedReference(value = "infra-epreuve")
     private List<Epreuve> epreuves;
 
@@ -71,3 +70,4 @@ public class Infrastructure {
         this.epreuves = epreuves;
     }
 }
+

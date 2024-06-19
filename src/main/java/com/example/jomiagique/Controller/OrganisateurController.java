@@ -66,7 +66,7 @@ public class OrganisateurController {
         return ResponseEntity.ok("Erreur pour la valider le billet.");
    }
 
-    //A TESTER!!!!!!!!!!!!!!
+
     //pour chaque épreuve compter nombres de billets et nombre de participant
     // on retourne pour chaque épreuve le nombre de billets et le pourcentage d'occupation
     //et on retourne le nombre de partivcipants
@@ -83,7 +83,7 @@ public class OrganisateurController {
                int nbParticipants = epreuve.getParticipants().size();
                double tauxOccupation = (double) nbPlaces / epreuve.getNombreDePlaces() * 100.0;
                if (nbPlaces != 0){
-                   chiffreAffaire = chiffreAffaire + nbPlaces * epreuve.getBillets().get(1).getPrix();
+                   chiffreAffaire = chiffreAffaire + nbPlaces * epreuve.getBillets().get(0).getPrix();
                }
                String ligneStatistique = String.format("Nom épreuve : %s, nombre de places : %d, taux d'occupation : %.2f%%, nombre de participants : %d;",
                        nomEpreuve, nbPlaces, tauxOccupation, nbParticipants);

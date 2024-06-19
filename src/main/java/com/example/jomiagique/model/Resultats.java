@@ -21,7 +21,6 @@ public class Resultats {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "participants-resultats")
     private Participant participants;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "epreuves-resultats")
     private Epreuve epreuve;
@@ -68,7 +67,7 @@ public class Resultats {
     }
 
     public void setParticipants(Participant participant) {
-        this.participants = participants;
+        this.participants = participant;
     }
 
     public Epreuve getEpreuves() {

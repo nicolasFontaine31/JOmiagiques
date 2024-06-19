@@ -26,14 +26,14 @@ public class Epreuve {
                    joinColumns = @JoinColumn(name = "epreuve_id", referencedColumnName = "id"),
                    inverseJoinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"),
                    uniqueConstraints={@UniqueConstraint(columnNames={"epreuve_id", "participant_id"})})
-    @JsonIgnoreProperties(value="epreuves")
+    @JsonIgnoreProperties("epreuves")
     private List<Participant> participants = new ArrayList<Participant>();
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "infra-epreuve")
     private Infrastructure idInfrastructure;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "epreuve")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "epreuve")
     @JsonManagedReference(value = "epreuves-resultats")
     private List<Resultats> resultats;
 

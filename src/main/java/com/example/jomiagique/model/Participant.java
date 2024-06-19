@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="participants_tab")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Participant {
 
     @Id
@@ -18,7 +19,7 @@ public class Participant {
     private String nom;
     private String prenom;
     private String adressemail;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference(value = "delegation-Participant")
     private Delegation idDelegation;
 
@@ -28,7 +29,7 @@ public class Participant {
             joinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "epreuve_id", referencedColumnName = "id"),
             uniqueConstraints={@UniqueConstraint(columnNames={"epreuve_id", "participant_id"})})
-    @JsonIgnoreProperties(value="participants")
+    @JsonIgnoreProperties("participants")
     private List<Epreuve> epreuves = new ArrayList<Epreuve>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "participants")
