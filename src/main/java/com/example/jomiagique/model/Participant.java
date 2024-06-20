@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="participants_tab")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIgnoreProperties({"hibernateLazyInitialize","handler","idResultats","resultats"})
 public class Participant {
 
     @Id
@@ -19,12 +19,12 @@ public class Participant {
     private String nom;
     private String prenom;
     private String adressemail;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JsonBackReference(value = "delegation-Participant")
     private Delegation idDelegation;
 
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "particpant_epreuves_tab",
             joinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "epreuve_id", referencedColumnName = "id"),
@@ -32,22 +32,19 @@ public class Participant {
     @JsonIgnoreProperties("participants")
     private List<Epreuve> epreuves = new ArrayList<Epreuve>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "participants")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "participants")
     @JsonManagedReference(value = "participants-resultats")
     private List<Resultats> resultats;
 
     public Participant(){
-
     }
 
-    public Participant(long id, String nom, String prenom, String adressemail, List<Epreuve> epreuves, List<Resultats> resultats, Delegation idDelegation) {
+    public Participant(long id, String nom, String prenom, String adressemail, Delegation idDelegation) {
         super();
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.adressemail = adressemail;
-        this.epreuves = epreuves;
-        this.resultats = resultats;
         this.idDelegation = idDelegation;
     }
 

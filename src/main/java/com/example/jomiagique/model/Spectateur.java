@@ -17,6 +17,7 @@ public class Spectateur {
     @JsonManagedReference(value = "spectateur-billets")
     private List<Billet> billets;
 
+    public Spectateur() {}
     public Spectateur(long id, String nom, String prenom, String adressemail) {
         super();
         this.id = id;
@@ -24,7 +25,6 @@ public class Spectateur {
         this.prenom = prenom;
         this.adressemail = adressemail;
     }
-    public Spectateur() {}
 
     public long getId() {
         return id;

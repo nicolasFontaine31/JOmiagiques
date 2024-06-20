@@ -17,11 +17,14 @@ public class Delegation {
     private int nbMedaillesArgent;
     private int nbMedaillesBronze;
 
-    @OneToMany(mappedBy = "idDelegation")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "idDelegation")
     @JsonManagedReference(value = "delegation-Participant")
     private List<Participant> participants;
 
+    public Delegation() {}
+
     public Delegation(long id, String name,int nbMedaillesOr,int nbMedaillesArgent,int nbMedaillesBronze) {
+        super();
         this.id = id;
         this.name = name;
         this.nbMedaillesOr = nbMedaillesOr;
@@ -29,7 +32,6 @@ public class Delegation {
         this.nbMedaillesBronze = nbMedaillesBronze;
     }
 
-    public Delegation() {}
 
     public long getId() {
         return id;

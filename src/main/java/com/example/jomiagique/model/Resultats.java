@@ -1,6 +1,7 @@
 package com.example.jomiagique.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -18,15 +19,14 @@ public class Resultats {
     private long id;
     private String score;
     private position position;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.EAGER)
     @JsonBackReference(value = "participants-resultats")
     private Participant participants;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.EAGER)
     @JsonBackReference(value = "epreuves-resultats")
     private Epreuve epreuve;
 
     public Resultats(){
-
     }
 
     public Resultats(long id, String score, position position, Participant participant, Epreuve epreuve) {

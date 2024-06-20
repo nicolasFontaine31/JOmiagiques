@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="epreuves_tab")
+@JsonIgnoreProperties({"hibernateLazyInitialize","handler","resultats","participants"})
 public class Epreuve {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,11 +30,11 @@ public class Epreuve {
     @JsonIgnoreProperties("epreuves")
     private List<Participant> participants = new ArrayList<Participant>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.EAGER)
     @JsonBackReference(value = "infra-epreuve")
     private Infrastructure idInfrastructure;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "epreuve")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "epreuve")
     @JsonManagedReference(value = "epreuves-resultats")
     private List<Resultats> resultats;
 
@@ -49,16 +50,13 @@ public class Epreuve {
         this.idInfrastructure = infrastructure;
     }
 
-    public Epreuve(long id, String nomEpreuve, Date date, Infrastructure infrastructure, int nombreDePlaces, List<Billet> billets, List<Participant> participants,  List<Resultats> resultats) {
+    public Epreuve(long id, String nomEpreuve, Date date, Infrastructure infrastructure, int nombreDePlaces) {
         super();
         this.id = id;
         this.nomEpreuve = nomEpreuve;
         this.date = date;
         this.idInfrastructure = infrastructure;
         this.nombreDePlaces = nombreDePlaces;
-        this.billets = billets;
-        this.participants = participants;
-        this.resultats = resultats;
     }
 
     public long getId() {
