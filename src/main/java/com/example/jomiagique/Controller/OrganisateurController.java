@@ -40,7 +40,10 @@ public class OrganisateurController {
    @RequestMapping(method = RequestMethod.POST,value = "/add")
    public ResponseEntity<String> addOrganisateur(@RequestBody Organisateur organisateur){
         organisateurService.addOrganisateur(organisateur);
-       return ResponseEntity.ok("L'organisateur a été créé avec succés.");
+        if(organisateur.getRole()== Organisateur.role.organisateur){
+            return ResponseEntity.ok("L'organisateur a été créé avec succés.");
+        }
+       return ResponseEntity.ok("Le controlleur a été créé avec succés.");
    }
    @RequestMapping(method = RequestMethod.PUT, value = "/update/{id}")
     public void updateOrganisateur(@RequestBody Organisateur organisateur, @PathVariable long id){
@@ -69,7 +72,7 @@ public class OrganisateurController {
 
     //pour chaque épreuve compter nombres de billets et nombre de participant
     // on retourne pour chaque épreuve le nombre de billets et le pourcentage d'occupation
-    //et on retourne le nombre de partivcipants
+    //et on retourne le nombres de participants
    @RequestMapping(value = "/getStatistiques/{idOrganisateur}")
     public ResponseEntity<String> getStatistiques(@PathVariable long idOrganisateur){
         long chiffreAffaire = 0;
@@ -118,9 +121,10 @@ public class OrganisateurController {
             List<Resultats> resultats = resultatService.getResultats();
             for(Resultats resultats1:resultats){
                 publier.append("Dans l'épreuve : ").append(resultats1.getEpreuves().getNomEpreuve())
-                        .append("Le participant :  ").append(resultats1.getParticipant().getNom())
+                        .append(". Le participant :  ").append(resultats1.getParticipant().getNom())
+                        .append(" ")
                         .append(resultats1.getParticipant().getPrenom())
-                        .append("a marqué ").append(resultats1.getScore())
+                        .append(" a marqué ").append(resultats1.getScore())
                         .append(" et il est classé ").append(resultats1.getPosition())
                         .append("\n");
             }

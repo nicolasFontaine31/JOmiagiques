@@ -37,7 +37,6 @@ public class ResultatController {
         return resultatService.getResultat(idResultat);
     }
 
-    //add un res par epreuve et participant
     @RequestMapping(method = RequestMethod.POST,value = "/addResultatByEpreuve/{idEpreuve}/{idParticipant}")
     public ResponseEntity<String> addResultatByEpreuve(@RequestBody Resultats resultat, @PathVariable long idEpreuve, @PathVariable long idParticipant){
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);

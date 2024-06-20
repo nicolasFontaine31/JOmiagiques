@@ -69,7 +69,6 @@ public class ParticipantController {
         }
     }
 
-    //envoyer des messages d'erreurs
     @RequestMapping(method = RequestMethod.PUT, value = "/addEpreuveToParticipant/{idParticipant}/{idEpreuve}")
     public void addEpreuveToParticipant(@PathVariable long idEpreuve, @PathVariable long idParticipant) {
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
@@ -90,7 +89,6 @@ public class ParticipantController {
     }
 
     //désengager avant 10 jours rien sinon noté forfait et pas possible d'être remplacé
-    //rajouter forfait quand résultat sera mappé
     @RequestMapping(method = RequestMethod.PUT, value = "/desengagerEpreuve/{idParticipant}/{idEpreuve}")
     public void desengagerEpreuveToParticipant(@PathVariable long idParticipant, @PathVariable long idEpreuve){
         Epreuve epreuve = epreuveService.getEpreuve(idEpreuve);
@@ -120,7 +118,6 @@ public class ParticipantController {
         }
     }
 
-    //On ajoute un participant et son numéro de position dans le body
     //ajouter le resultat au participant
     @RequestMapping(method = RequestMethod.PUT, value = "/addResultatByParticipant/{idResultat}/{idParticipant}")
     public void addResultatByParticipant(@PathVariable long idResultat, @PathVariable long idParticipant){

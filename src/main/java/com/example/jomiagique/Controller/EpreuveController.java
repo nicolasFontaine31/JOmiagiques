@@ -3,6 +3,7 @@ package com.example.jomiagique.Controller;
 import com.example.jomiagique.Service.*;
 import com.example.jomiagique.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,7 +25,6 @@ public class EpreuveController {
     @Autowired
     private OrganisateurService organisateurService;
 
-    //peut être faire que les epreuves dispo ? en fonction de la date ? à vérifier
     @RequestMapping("/getEpreuves")
     public List<Epreuve> getEpreuves(){
         return epreuveService.getEpreuves();
@@ -58,17 +58,22 @@ public class EpreuveController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateEpreuve/{idEpreuve}/{idOrganisateur}")
-    public void updateEpreuve(@RequestBody Epreuve epreuve, @PathVariable long idEpreuve, @PathVariable long idOrganisateur){
+    public ResponseEntity<String> updateEpreuve(@RequestBody Epreuve epreuve, @PathVariable long idEpreuve, @PathVariable long idOrganisateur){
         Epreuve epreuveTemp = epreuveService.getEpreuve(idEpreuve);
         if (epreuveTemp != null){
             Organisateur organisateur = organisateurService.getOrganisateur(idOrganisateur);
             if(organisateur != null && organisateur.getRole()== Organisateur.role.organisateur) {
-                if(epreuve.getNombreDePlaces()<=epreuve.getInfrastructure().getCapacite()){
+                if(epreuve.getNombreDePlaces()<=epreuveTemp.getInfrastructure().getCapacite()){
                     epreuve.setId(idEpreuve);
+                    epreuve.setInfrastructure(epreuveTemp.getInfrastructure());
                     epreuveService.updateEpreuve(epreuve);
+                    return ResponseEntity.ok("L'épreuve a été mise à jour. ");
                 }
+                return ResponseEntity.ok("Impossible de mettre à jour l'épreuve. Pas assez de place dans l'infrastructure");
             }
+            return ResponseEntity.ok("La mise à jour n'est accessible que par l'organisateur. ");
         }
+        return ResponseEntity.ok("L'épreuve n'existe pas. ");
     }
 
     //récupérer l'épreuve par spectateur

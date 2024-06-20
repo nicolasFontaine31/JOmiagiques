@@ -66,7 +66,7 @@ public class SpectateurController {
             if (billet.getIdSpectateur().getId() == idSpectateur) {
                 billet.setEtat(Billet.Etat.annule);
                 LocalDate today = LocalDate.now();
-                LocalDate dateEpreuve = billet.getDateAchat().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate dateEpreuve = billet.getIdEpreuve().getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 long daysBetween = ChronoUnit.DAYS.between(today, dateEpreuve);
                 //rembourser sans frais superieur à 7
                 if(daysBetween > 7){
